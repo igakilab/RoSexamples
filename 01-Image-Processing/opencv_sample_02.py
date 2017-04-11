@@ -21,5 +21,5 @@ if __name__ == '__main__':
         cv2.imshow(WINNAME, frame)
 
         key = cv2.waitKey(1)
-        if key == ord('q'):
+        if key%256 == ord('q'):
             break

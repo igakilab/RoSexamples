@@ -13,13 +13,12 @@ def run():
     for r in range(256):
         for g in range(256):
             for b in range(256):
-                img[...] = (b, g, r)
-                print("(r, g, b) = ({}, {}, {})".format(r, g, b), file=sys.stderr)
+                img[...] = (b/255.0, g/255.0, r/255.0)
+                print("(r, g, b) = ({}, {}, {})".format(r/255.0, g/255.0, b/255.0), file=sys.stderr)
                 cv2.imshow(WINNAME, img)
-                print(img)
 
                 key = cv2.waitKey(1)
-                if key == ord('q'):
+                if key%256 == ord('q'):
                     return
 
 if __name__ == '__main__':
