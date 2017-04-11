@@ -17,7 +17,6 @@ if __name__ == '__main__':
     while True:
         _, frame = cap.read()
         frame.resize((HEIGHT, WIDTH, 3))
-
         cv2.imshow(WINNAME, frame)
 
         key = cv2.waitKey(1)
