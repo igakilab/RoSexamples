@@ -15,7 +15,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     while True:
-        success, frame = cap.read()
+        _, frame = cap.read()
         frame.resize((HEIGHT, WIDTH, 3))
 
         cv2.imshow(WINNAME, frame)
