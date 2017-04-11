@@ -14,7 +14,8 @@ def run():
         for g in range(256):
             for b in range(256):
                 img[...] = (b/255.0, g/255.0, r/255.0)
-                print("(r, g, b) = ({}, {}, {})".format(r/255.0, g/255.0, b/255.0), file=sys.stderr)
+                print(img)
+
                 cv2.imshow(WINNAME, img)
 
                 key = cv2.waitKey(1)
