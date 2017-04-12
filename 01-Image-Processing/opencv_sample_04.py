@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import sys
 import cv2
 import numpy
 from numpy.random import randint
@@ -26,7 +25,7 @@ if __name__ == '__main__':
         image = numpy.copy(frame)
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         hueMat = cv2.inRange(hsv, lower, upper)
-        kernel = numpy.ones((3,3),numpy.uint8)
+        kernel = numpy.ones((5,5),numpy.uint8)
 
         hueMat = cv2.erode(hueMat,kernel,iterations = 3)
         hueMat = cv2.dilate(hueMat,kernel,iterations = 6)
@@ -36,6 +35,7 @@ if __name__ == '__main__':
 
         contours, hierarchy = cv2.findContours(hueMat, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 
+        #draw all contours with random boarder colors
         color = [randint(256) for _ in range(3)]
         cv2.drawContours(image, contours, -1, color, 3)
 
