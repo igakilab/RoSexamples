@@ -18,8 +18,6 @@ lower = numpy.array([0, 48, 80], dtype = "uint8")
 upper = numpy.array([20, 255, 255], dtype = "uint8")
 
 if __name__ == '__main__':
-    #cv2.namedWindow(WINNAME)
-
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         sys.exit(1)
@@ -49,7 +47,10 @@ if __name__ == '__main__':
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
             print("(cx,cy)=(" + str(cx) + "," + str(cy) + ")")
-            cv2.circle(frame, (cx,cy),50,(0,0,255),10)
+            x,y,w,h = cv2.boundingRect(cont)
+            cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),5)
+            #cv2.circle(frame, (cx,cy),w,(0,0,255),10)
+
         cv2.imshow('frame',frame)
         cv2.imshow('mask',hueMat)
         cv2.imshow('res',res)
