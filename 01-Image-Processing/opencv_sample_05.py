@@ -5,7 +5,7 @@ import cv2
 import numpy
 from numpy.random import randint
 
-WINNAME = "OpenCV Sample 04"
+WINNAME = "OpenCV Sample 05"
 WIDTH = 640
 HEIGHT = 480
 
