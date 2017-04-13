@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
-#import roslib
-#roslib.load_manifest('py_tutorial')
+
 import sys
 import rospy
 import cv2
@@ -41,7 +40,7 @@ def main(args):
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutting down")
-    cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
  
 if __name__ == '__main__':
     main(sys.argv)

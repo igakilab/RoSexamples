@@ -40,8 +40,8 @@ class image_converter:
         color = [randint(256) for _ in range(3)]
         cv2.drawContours(cv_image, contours, -1, color, 3)
  
-        cv2.imshow("Image window", cv_image)
-        cv2.waitKey(3)
+        cv2.imshow("Sample 03", cv_image)
+        cv2.waitKey(1)
  
         try:
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
@@ -49,13 +49,13 @@ class image_converter:
             print(e)
  
 def main(args):
-    rospy.init_node('image_converter', anonymous=True)
+    rospy.init_node('Detect_Contours', anonymous=True)
     ic = image_converter()
     try:
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutting down")
-    cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
  
 if __name__ == '__main__':
     main(sys.argv)
