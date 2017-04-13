@@ -16,7 +16,7 @@ class SimpleKobuki:
         self.vel_cmd = Twist()
 
     def bumper_cb(self, data):
-        sys.stdout.flush()
+        #sys.stdout.flush()
         if data.state == BumperEvent.PRESSED:
             sys.stdout.write("PRESSED \r")
         elif data.state == BumperEvent.RELEASED:

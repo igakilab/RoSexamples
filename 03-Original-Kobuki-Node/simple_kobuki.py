@@ -10,9 +10,9 @@ class SimpleKobuki:
         self.bumper_sub = rospy.Subscriber("mobile_base/events/bumper", BumperEvent, self.bumper_cb)
  
     def bumper_cb(self, data):
-        sys.stdout.flush()
+        sys.stdout.flush() #sys.stdout.write required at least 1 flush or print
         if data.state == BumperEvent.PRESSED:
-            sys.stdout.write("PRESSED \r")
+            sys.stdout.write("PRESSED \r") # string with \r updates console stdout
         elif data.state == BumperEvent.RELEASED:
             sys.stdout.write("RELEASED\r")
         else:
