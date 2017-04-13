@@ -4,8 +4,6 @@ import os
 import sys
 import rospy
 from kobuki_msgs.msg import BumperEvent
-from std_msgs.msg import String
-
 
 class SimpleKobuki:
     def __init__(self):
