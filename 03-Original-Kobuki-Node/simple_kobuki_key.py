@@ -16,13 +16,13 @@ class SimpleKobuki:
         self.vel_cmd = Twist()
 
     def bumper_cb(self, data):
-        #sys.stdout.flush()
+        sys.stdout.flush()
         if data.state == BumperEvent.PRESSED:
-            sys.stdout.write("PRESSED \r")
+            sys.stdout.write("\r\033[K" + "PRESSED")
         elif data.state == BumperEvent.RELEASED:
-            sys.stdout.write("RELEASED\r")
+            sys.stdout.write("\r\033[K" + "RELEASED")
         else:
-            sys.stdout.write("Bumper Unknown event\r")
+            sys.stdout.write("\r\033[K" + "Bumper Unknown event")
 
     def waitConnection(self):
         while self.power_cmd_pub.get_num_connections() < 1:
@@ -58,9 +58,8 @@ class SimpleKobuki:
 
         if message:
             message = message + " is pressed "
-
-        self.vel_cmd_pub.publish(self.vel_cmd)
-        sys.stdout.write(message + "linear.x = "+str(self.vel_cmd.linear.x)+" angular.z = "+str(self.vel_cmd.angular.z)+"                  \r")
+            self.vel_cmd_pub.publish(self.vel_cmd)
+            sys.stdout.write("\r\033[K" + message + "linear.x = "+str(self.vel_cmd.linear.x)+" angular.z = "+str(self.vel_cmd.angular.z)+"\r")
 
 def main(args):
     rospy.init_node("SimpleKobuki_Key", anonymous=True) 
@@ -70,7 +69,7 @@ def main(args):
         while not rospy.is_shutdown():
             kobuki.spin()
     except KeyboardInterrupt:
-        print("Shutting down                               ")
+        print("\r\033[K"+"Shutting down")
  
 if __name__ == '__main__':
     os.system("clear")

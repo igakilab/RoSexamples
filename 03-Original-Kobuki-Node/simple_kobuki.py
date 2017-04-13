@@ -8,15 +8,15 @@ from kobuki_msgs.msg import BumperEvent
 class SimpleKobuki:
     def __init__(self):
         self.bumper_sub = rospy.Subscriber("mobile_base/events/bumper", BumperEvent, self.bumper_cb)
- 
+
     def bumper_cb(self, data):
-        sys.stdout.flush() #sys.stdout.write required at least 1 flush or print
+        sys.stdout.flush()
         if data.state == BumperEvent.PRESSED:
-            sys.stdout.write("PRESSED \r") # string with \r updates console stdout
+            sys.stdout.write("\r\033[K" + "PRESSED") #\r\033[K move cursor and delete the line
         elif data.state == BumperEvent.RELEASED:
-            sys.stdout.write("RELEASED\r")
+            sys.stdout.write("\r\033[K" + "RELEASED")
         else:
-            sys.stdout.write("Bumper Unknown event\r")
+            sys.stdout.write("\r\033[K" + "Bumper Unknown event") 
  
 def main(args):
  
@@ -25,7 +25,7 @@ def main(args):
     try:
         rospy.spin()
     except KeyboardInterrupt:
-        print("Shutting down")
+        print("\r\033[K" + "Shutting down")
  
 if __name__ == '__main__':
     os.system("clear")
