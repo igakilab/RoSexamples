@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 import cv2
 
@@ -15,11 +16,11 @@ def mouse_event(event, x, y, flg, prm):
 		
 		cv2.imshow('average color', img)
 
-		print 'bgr: '+str(img[1,1,:])
+		print('bgr: '+str(img[1,1,:]))
 		
 		avhsv = cv2.cvtColor(np.array([[avbgr]], np.uint8), cv2.COLOR_BGR2HSV)
 
-		print 'hsv: '+str(avhsv[0,0,:])
+		print('hsv: '+str(avhsv[0,0,:]))
 
 
 cap=cv2.VideoCapture(0)
