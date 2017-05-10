@@ -79,9 +79,22 @@ class SimpleKobuki:
             M = cv2.moments(cont)
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
-            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+"color:"+cname)
+            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+"color:"+cname+" ex_green:"+str(self.status.exist_green))
             x,y,w,h = cv2.boundingRect(cont)
             cv2.rectangle(cv_image,(x,y),(x+w,y+h),(0,0,255),5)
+            
+            if cname=="green" and cv2.contourArea(cont) > 20000:
+                self.status.exist_green = 0
+                if cx < 240:
+                    self.status.direction = 180
+                elif cx > 400:
+                    self.status.direction = 0
+                else:
+                    self.status.direction = 90
+            elif self.status.exist_green < -60: # green is not detected meanwhile
+                self.status.direction = 0
+            else:
+                self.status.exist_green = self.status.exist_green - 1
         
         return cv_image
 
@@ -104,8 +117,8 @@ class SimpleKobuki:
         yupper = numpy.array([40, 255, 255], dtype = "uint8")
 
         cv_image = self.draw_contours(cv_image,blower,bupper,"blue")
-        cv_image = self.draw_contours(cv_image,glower,gupper,"green")
         cv_image = self.draw_contours(cv_image,ylower,yupper,"yellow")
+        cv_image = self.draw_contours(cv_image,glower,gupper,"green")
 
         cv2.imshow('original',cv_image)
 
