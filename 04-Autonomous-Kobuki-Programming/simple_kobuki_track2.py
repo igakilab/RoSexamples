@@ -113,7 +113,7 @@ class SimpleKobuki:
         except CvBridgeError as e:
             print(e)
         #blue color
-        blower = numpy.array([95, 200, 200], dtype = "uint8")
+        blower = numpy.array([95, 200, 100], dtype = "uint8")
         bupper = numpy.array([115, 255, 255], dtype = "uint8")
 
         #green color
@@ -124,8 +124,8 @@ class SimpleKobuki:
         ylower = numpy.array([20, 200, 100], dtype = "uint8")
         yupper = numpy.array([40, 255, 255], dtype = "uint8")
 
-        cv_image = self.draw_contours(cv_image,blower,bupper,"blue")
         cv_image = self.draw_contours(cv_image,ylower,yupper,"yellow")
+        cv_image = self.draw_contours(cv_image,blower,bupper,"blue")
         cv_image = self.draw_contours(cv_image,glower,gupper,"green")
 
         cv2.imshow('original',cv_image)
