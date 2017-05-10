@@ -108,7 +108,6 @@ class SimpleKobuki:
         cv_image = self.draw_contours(cv_image,ylower,yupper,"yellow")
 
         cv2.imshow('original',cv_image)
-        #cv2.imshow('res',res)
 
         cv2.waitKey(3)
         try:
