@@ -6,7 +6,7 @@ class KobukiStatus:
         self.power = False
         self.direction = 0 # relative direction 0-360
         self.bumped = False
-        self.exist_green = 0
+        self.exist_obj = 0
         self.mode = "green"
 
     def print_status(self):

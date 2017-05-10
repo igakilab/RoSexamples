@@ -35,13 +35,17 @@ class SimpleKobuki:
         self.status = ks.KobukiStatus()
 
     def change_mode(self):
-        
+        if self.status.mode == "green":
+            self.status.mode = "blue"
+        elif self.status.mode == "blue":
+            self.status.mode = "green"
         
     def bumper_cb(self, data):
         self.scr.move(1,0)
         self.scr.clrtoeol()
         if data.state == BumperEvent.PRESSED:
-            self.status.bumped = True
+            #self.status.bumped = True
+            self.change_mode()
             self.scr.addstr(1,0,"PRESSED")
         elif data.state == BumperEvent.RELEASED:
             self.scr.addstr(1,0,"RELEASED")
@@ -82,22 +86,23 @@ class SimpleKobuki:
             M = cv2.moments(cont)
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
-            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+"color:"+cname+" ex_green:"+str(self.status.exist_green))
+            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+"color:"+cname+" ex_green:"+str(self.status.exist_obj))
             x,y,w,h = cv2.boundingRect(cont)
             cv2.rectangle(cv_image,(x,y),(x+w,y+h),(0,0,255),5)
             
             if cname==self.status.mode and cv2.contourArea(cont) > 20000:
-                self.status.exist_green = 0
+                self.status.exist_obj = 0
                 if cx < 240:
                     self.status.direction = 180
                 elif cx > 400:
                     self.status.direction = 0
                 else:
                     self.status.direction = 90
-            elif self.status.exist_green < -60: # green is not detected meanwhile
+            elif self.status.exist_obj < -200: # green is not detected meanwhile
                 self.status.direction = 0
             else:
-                self.status.exist_green = self.status.exist_green - 1
+                self.status.direction = -1
+                self.status.exist_obj = self.status.exist_obj - 1
         
         return cv_image
 
@@ -155,6 +160,9 @@ class SimpleKobuki:
         elif self.status.direction == 180:
             self.vel_cmd.linear.x = 0
             self.vel_cmd.angular.z = 0.4
+        elif self.status.direction == -1:
+            self.vel_cmd.linear.x = 0
+            self.vel_cmd.angular.z = 0
         else:
             self.vel_cmd.linear.x = 0
             self.vel_cmd.angular.z = 0
