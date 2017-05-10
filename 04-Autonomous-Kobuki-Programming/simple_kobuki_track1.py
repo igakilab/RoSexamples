@@ -53,8 +53,8 @@ class SimpleKobuki:
         # Convert quaternions to Euler angles.
         (roll, pitch, yaw) = tf.transformations.euler_from_quaternion([msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
         self.scr.addstr(0,0,"Odom("+str(self._x)+", "+str(self._y)+", "+str(yaw))
-    
-    def draw_contours_rect(self, cv_image, lower,upper,cname):
+
+    def draw_contours(self, cv_image, lower, upper,cname):
         self.scr.move(2,0)
         self.scr.clrtoeol()
 
@@ -82,20 +82,11 @@ class SimpleKobuki:
             self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+"color:"+cname)
             x,y,w,h = cv2.boundingRect(cont)
             cv2.rectangle(cv_image,(x,y),(x+w,y+h),(0,0,255),5)
-
-        cv2.imshow('original',cv_image)
-        #cv2.imshow('mask',hueMat)
-        cv2.imshow('res',res)
-
-        #cv2.imshow("Image window", cv_image)
-        cv2.waitKey(3)
-        try:
-            self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
-        except CvBridgeError as e:
-            print(e)
         
+        return cv_image
 
     def image_cb(self, data):
+
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
@@ -111,9 +102,19 @@ class SimpleKobuki:
         #yellow color
         ylower = numpy.array([20, 200, 100], dtype = "uint8")
         yupper = numpy.array([40, 255, 255], dtype = "uint8")
-        self.draw_contours_rect(cv_image, blower, bupper,"blue")
-        self.draw_contours_rect(cv_image, glower, gupper,"green")
-        self.draw_contours_rect(cv_image, ylower, yupper,"yellow")
+
+        cv_image = self.draw_contours(cv_image,blower,bupper,"blue")
+        cv_image = self.draw_contours(cv_image,glower,gupper,"green")
+        cv_image = self.draw_contours(cv_image,ylower,yupper,"yellow")
+
+        cv2.imshow('original',cv_image)
+        #cv2.imshow('res',res)
+
+        cv2.waitKey(3)
+        try:
+            self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+        except CvBridgeError as e:
+            print(e)
 
     def kobuki_move(self):
         if self.status.power == False:
