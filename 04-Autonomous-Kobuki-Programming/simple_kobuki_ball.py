@@ -53,21 +53,40 @@ class SimpleKobuki:
         hueMat = cv2.dilate(hueMat,kernel,iterations = 6)
         hueMat = cv2.erode(hueMat,kernel,iterations = 3)
 
-        # Bitwise-AND mask and original image
-        #res = cv2.bitwise_and(cv_image,cv_image, mask= hueMat)
         contours, hierarchy = cv2.findContours(hueMat, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
         color = [100,100,100]
-        #cv2.drawContours(res, contours, -1, color, 3)#draw all contours
 
         for cont in contours:
             M = cv2.moments(cont)
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
-            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")")
+            self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")"+" color:"+cname+" count:"+str(self.status.ball_count))
             x,y,w,h = cv2.boundingRect(cont)
             cv2.rectangle(cv_image,(x,y),(x+w,y+h),(0,0,255),5)
+
+            if self.status.ball_count > 20:
+                self.vel_cmd.linear.x = 0
+                self.vel_cmd.angular.z = 0
+
+            if cname == "blueball" and cv2.contourArea(cont) > 8000:
+                if cx < 280:
+                    self.vel_cmd.linear.x = 0
+                    self.vel_cmd.angular.z = 0.4
+                elif cx > 360:
+                    self.vel_cmd.linear.x = 0
+                    self.vel_cmd.angular.z = -0.4
+                elif self.status.ball_count > 5:
+                    self.status.ball_count = self.status.ball_count + 1
+                    self.vel_cmd.linear.x = 0.5
+                    self.vel_cmd.angular.z = 0
+                else:
+                    self.status.ball_count = self.status.ball_count + 1
+                    self.vel_cmd.linear.x = 0.5
+                    self.vel_cmd.angular.z = 0
+            elif cname == "blueball":
+                pass
         
-        return cv_image        
+        return cv_image
         
     def image_cb(self, data):
 

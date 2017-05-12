@@ -4,6 +4,8 @@ from __future__ import print_function
 class KobukiStatus:
     def __init__(self):
         self.power = False
+        self.ball_count = 0
+        
         self.direction = 0 # relative direction 0-360
         self.bumped = False
         self.exist_obj = 0
