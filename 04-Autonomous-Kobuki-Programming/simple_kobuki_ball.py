@@ -5,7 +5,6 @@ import sys
 import rospy
 import time
 import curses
-from getch import getch
 from kobuki_msgs.msg import BumperEvent,MotorPower
 from geometry_msgs.msg import Twist
 import cv2
@@ -119,11 +118,15 @@ class SimpleKobuki:
         if key in {83,115}: # S or s
             message = "START"
             self.status.power = True
-            self.vel_cmd.linear.x = 0.1
+            self.vel_cmd.linear.x = 0
             self.vel_cmd.angular.z = 0
         elif key in {81,113}: #Q or q
             message = "QUIT"
             self.status.power = False
+        elif key in {90,122}: #Z or z
+            message = "Acceleration mode!"
+            self.vel_cmd.linear.x = 1
+            self.vel_cmd.angular.z = 0
         elif key == 65: #UP
             message = "UP"
             self.vel_cmd.linear.x = 0.1
