@@ -111,16 +111,16 @@ class SimpleKobuki:
                 self.vel_cmd.angular.z = 0
         elif key == 66: #DOWN
             message = "DOWN"
-            self.vel_cmd.linear.x = -0.1
+            self.vel_cmd.linear.x = -0.3
             self.vel_cmd.angular.z = 0
         elif key == 67: #RIGHT
             message = "RIGHT"
             self.vel_cmd.linear.x = 0
-            self.vel_cmd.angular.z = -0.4
+            self.vel_cmd.angular.z = -1
         elif key == 68: #LEFT 
             message = "LEFT"
             self.vel_cmd.linear.x = 0
-            self.vel_cmd.angular.z = 0.4
+            self.vel_cmd.angular.z = 1
         elif key == 3:#Ctr+C
             raise KeyboardInterrupt
 
