@@ -5,12 +5,13 @@ import sys
 import rospy
 import time
 import curses
-from kobuki_msgs.msg import MotorPower
+from kobuki_msgs.msg import BumperEvent, MotorPower
 from geometry_msgs.msg import Twist
 
 class SimpleKobuki:
     def __init__(self,scr): #constructor
         self.scr = scr #for curses
+        self.bumper_sub = rospy.Subscriber("mobile_base/events/bumper", BumperEvent, self.bumper_cb)
         self.power_cmd_pub = rospy.Publisher("mobile_base/commands/motor_power", MotorPower,queue_size=10)
         self.vel_cmd_pub = rospy.Publisher("mobile_base/commands/velocity",Twist,queue_size=10)
         self.vel_cmd = Twist()
@@ -21,12 +22,26 @@ class SimpleKobuki:
             time.sleep(1)
         print("Connected")
 
+    def bumper_cb(self, bumper):
+        self.scr.move(1,0) #1st line
+        self.scr.clrtoeol() #Clear to End of Line
+        if bumper.state == BumperEvent.PRESSED:
+            self.scr.addstr(1,0,"PRESSED")
+            self.vel_cmd.linear.x = 0
+            self.vel_cmd.angular.z = 0
+        elif bumper.state == BumperEvent.RELEASED:
+            self.scr.addstr(1,0,"RELEASED")
+        else:
+            self.scr.addstr(1,0,"Bumper Unknown event")
+            
     def spin(self):
         key = self.scr.getch()
         message = ""
         if key in {83,115}: # S or s
             message = "START"
             self.power_cmd_pub.publish(MotorPower(MotorPower.ON))
+            self.vel_cmd.linear.x = 0.1
+            self.vel_cmd.angular.z = 0
         elif key in {81,113}: #Q or q
             message = "QUIT"
             self.power_cmd_pub.publish(MotorPower(MotorPower.OFF))
