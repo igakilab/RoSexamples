@@ -27,8 +27,7 @@ class SimpleKobuki:
         self.scr.clrtoeol() #Clear to End of Line
         if bumper.state == BumperEvent.PRESSED:
             self.scr.addstr(1,0,"PRESSED")
-            self.vel_cmd.linear.x = 0
-            self.vel_cmd.angular.z = 0
+            self.power_cmd_pub.publish(MotorPower(MotorPower.OFF))
         elif bumper.state == BumperEvent.RELEASED:
             self.scr.addstr(1,0,"RELEASED")
         else:

@@ -7,6 +7,7 @@ import time
 import curses
 from kobuki_msgs.msg import BumperEvent, MotorPower
 from geometry_msgs.msg import Twist
+import kobuki_status as ks
 
 class SimpleKobuki:
     def __init__(self,scr): #constructor
@@ -15,6 +16,7 @@ class SimpleKobuki:
         self.power_cmd_pub = rospy.Publisher("mobile_base/commands/motor_power", MotorPower,queue_size=10)
         self.vel_cmd_pub = rospy.Publisher("mobile_base/commands/velocity",Twist,queue_size=10)
         self.vel_cmd = Twist()
+        self.status = ks.KobukiStatus()
         
     def waitConnection(self):
         while self.power_cmd_pub.get_num_connections() < 1:
@@ -27,24 +29,32 @@ class SimpleKobuki:
         self.scr.clrtoeol() #Clear to End of Line
         if bumper.state == BumperEvent.PRESSED:
             self.scr.addstr(1,0,"PRESSED")
-            self.vel_cmd.linear.x = 0
-            self.vel_cmd.angular.z = 0
+            self.status.power = False
         elif bumper.state == BumperEvent.RELEASED:
             self.scr.addstr(1,0,"RELEASED")
         else:
             self.scr.addstr(1,0,"Bumper Unknown event")
-            
+
+    def kobuki_move(self):
+        if self.status.power == False:
+            self.power_cmd_pub.publish(MotorPower(MotorPower.OFF))
+            return
+        else:
+            self.power_cmd_pub.publish(MotorPower(MotorPower.ON))
+        
+        self.vel_cmd_pub.publish(self.vel_cmd)
+        
     def spin(self):
         key = self.scr.getch()
         message = ""
         if key in {83,115}: # S or s
             message = "START"
-            self.power_cmd_pub.publish(MotorPower(MotorPower.ON))
+            self.status.power = True
             self.vel_cmd.linear.x = 0.1
             self.vel_cmd.angular.z = 0
         elif key in {81,113}: #Q or q
             message = "QUIT"
-            self.power_cmd_pub.publish(MotorPower(MotorPower.OFF))
+            self.status.power = False
         elif key == 65: #UP
             message = "UP"
             self.vel_cmd.linear.x = 0.1
@@ -69,7 +79,7 @@ class SimpleKobuki:
         self.scr.move(3,0)
         self.scr.clrtoeol()
         self.scr.addstr(3,0,message + "linear.x = "+str(self.vel_cmd.linear.x)+" angular.z = "+str(self.vel_cmd.angular.z))
-        self.vel_cmd_pub.publish(self.vel_cmd)
+        self.kobuki_move()
 
 def main(args):
     rospy.init_node("minigame_key", anonymous=True)
