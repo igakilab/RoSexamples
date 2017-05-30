@@ -9,9 +9,9 @@ from kobuki_msgs.msg import MotorPower
 from geometry_msgs.msg import Twist
 
 class SimpleKobuki:
-    def __init__(self,scr):
-        self.frame = 0
-        self.scr = scr
+    def __init__(self,scr): #constructor
+        self.frame = 0 #for curses
+        self.scr = scr #for curses
         self.power_cmd_pub = rospy.Publisher("mobile_base/commands/motor_power", MotorPower,queue_size=10)
         self.vel_cmd_pub = rospy.Publisher("mobile_base/commands/velocity",Twist,queue_size=10)
         self.vel_cmd = Twist()
