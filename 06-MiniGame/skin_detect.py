@@ -37,7 +37,6 @@ if __name__ == '__main__':
         hueMat = cv2.erode(hueMat,kernel,iterations = 3)
 
         contours, hierarchy = cv2.findContours(hueMat, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
-        color = [255,0,0]
 
         #draw rectangle surrunding each contour
         for cont in contours:
