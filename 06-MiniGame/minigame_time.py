@@ -51,10 +51,10 @@ class SimpleKobuki:
         except CvBridgeError as e:
             print(e)
 
-        #green color
-        lower = numpy.array([70, 200, 100], dtype = "uint8")
-        upper = numpy.array([90, 255, 200], dtype = "uint8")
-
+        #blue ball color
+        lower = numpy.array([90, 160, 100], dtype = "uint8")
+        upper = numpy.array([110, 230, 230], dtype = "uint8")
+        
         # Convert BGR to HSV
         hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
 
@@ -78,7 +78,11 @@ class SimpleKobuki:
             self.scr.addstr(2,0,"(cx,cy)=(" + str(cx) + "," + str(cy) + ")")
             x,y,w,h = cv2.boundingRect(cont)
             cv2.rectangle(cv_image,(x,y),(x+w,y+h),(0,0,255),5)
-            self.status.blueball = True
+            #cv2.contourArea(cont) returns a pixel value of the contour area(pixel:maximum size = 640 * 480)
+            if cv2.contourArea(cont)>10000: 
+                self.status.blueballx = cx
+                self.status.bluebally = cy
+                self.status.blueball = True
 
         cv2.imshow('original',cv_image)
 
@@ -96,9 +100,20 @@ class SimpleKobuki:
             self.power_cmd_pub.publish(MotorPower(MotorPower.ON))
         
         if self.status.blueball == True:
-            self.vel_cmd.linear.x = 0
-            self.vel_cmd.angular.z = 0
-            self.status.blueball = False
+            #spin and kobuki_move are called for 20 times per second(20Hz).
+            if self.status.blueballcount > 100:
+                self.status.power = False
+                self.status.blueballcount = 0
+            elif self.status.blueballx < 220:
+                self.vel_cmd.linear.x = 0
+                self.vel_cmd.angular.z = 0.4
+            elif self.status.blueballx > 420:
+                self.vel_cmd.linear.x = 0
+                self.vel_cmd.angular.z = -0.4
+            else:
+                self.vel_cmd.linear.x = 0.1
+                self.vel_cmd.angular.z = 0
+                self.status.blueballcount += 1
         elif self.status.blueball == False:
             self.vel_cmd.linear.x = 0
             self.vel_cmd.angular.z = -0.4
